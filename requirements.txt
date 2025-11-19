@@ -1,0 +1,11 @@
+sounddevice==0.5.3
+soundfile==0.13.1
+numpy==2.3.5
+scipy==1.16.3
+imageio-ffmpeg==0.6.0
+groq==0.34.1
+python-dotenv==1.2.1
+gtts==2.5.4
+streamlit==1.51.0
+speech-recognition
+
