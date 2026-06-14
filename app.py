@@ -27,31 +27,131 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Main body background and font */
     .main {
-        background-color: #0E1117;
+        background: radial-gradient(circle at top right, #1e1b4b 0%, #0f172a 100%);
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
+    
+    /* Elegant Title */
+    .header-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 2.8rem !important;
+        text-align: center;
+        background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #fda4af 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 5px;
+        letter-spacing: -0.03em;
+        filter: drop-shadow(0 2px 10px rgba(244, 63, 94, 0.2));
+        padding-top: 20px;
+    }
+    
+    .header-subtitle {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        text-align: center;
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 35px;
+        font-weight: 400;
+    }
+    
+    /* Glassmorphism card effects for columns */
+    div[data-testid="column"] {
+        background: rgba(30, 41, 59, 0.45) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 16px !important;
+        padding: 25px !important;
+        box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.25) !important;
+        transition: transform 0.3s ease, border-color 0.3s ease !important;
+    }
+    
+    div[data-testid="column"]:hover {
+        border-color: rgba(244, 63, 94, 0.2) !important;
+    }
+    
+    /* Button Customization */
     .stButton>button {
         width: 100%;
-        border-radius: 10px;
-        height: 3em;
-        font-weight: bold;
+        background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 14px 28px !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        letter-spacing: 0.02em !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 15px 0 rgba(225, 29, 72, 0.3) !important;
+        height: auto !important;
     }
+    
+    .stButton>button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px 0 rgba(225, 29, 72, 0.5), 0 0 12px rgba(225, 29, 72, 0.3) !important;
+        background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%) !important;
+    }
+    
+    .stButton>button:active {
+        transform: translateY(0) !important;
+    }
+    
+    /* Image and Uploader block styling */
     div[data-testid="stImage"] {
-        border: 2px solid #262730;
-        border-radius: 10px;
-        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+        background: rgba(15, 23, 42, 0.5) !important;
     }
-    .result-box {
-        background-color: #262730;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 10px 0;
-        min-height: 150px;
+    
+    /* Audio input / recorder style */
+    div[data-testid="stAudioInput"] {
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding: 8px !important;
+        background: rgba(15, 23, 42, 0.3) !important;
     }
-    h1 {
+    
+    /* Output text areas / boxes styling */
+    .stTextArea textarea {
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        color: #e2e8f0 !important;
+        font-size: 0.95rem !important;
+        padding: 15px !important;
+    }
+    
+    /* Custom headers in cards */
+    .card-header {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin-bottom: 20px;
+        border-bottom: 2px solid rgba(244, 63, 94, 0.2);
+        padding-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    /* Footer elements */
+    .footer-text {
         text-align: center;
-        color: #FF4B4B;
-        margin-bottom: 30px;
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-top: 30px;
+    }
+    
+    /* Success & Info boxes style */
+    .stAlert {
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -71,14 +171,15 @@ if 'response_audio_path' not in st.session_state:
     st.session_state.response_audio_path = None
 
 # Header
-st.markdown("<h1>🩺 AI Doctor with Vision and Voice</h1>", unsafe_allow_html=True)
+st.markdown("<div class='header-title'>🩺 AI Doctor with Vision and Voice</div>", unsafe_allow_html=True)
+st.markdown("<div class='header-subtitle'>Empowered with Groq Llama-4 Multimodal Intelligence</div>", unsafe_allow_html=True)
 
 # Main layout: Left column and Right column
 col_left, col_right = st.columns([1, 1], gap="large")
 
 with col_left:
     # Voice Recording Panel
-    st.markdown("### 🎤 Voice Recording")
+    st.markdown("<div class='card-header'>🎤 Voice Recording</div>", unsafe_allow_html=True)
     
     audio_value = st.audio_input("Record your voice", label_visibility="collapsed")
     
@@ -95,10 +196,10 @@ with col_left:
         st.session_state.recorded_audio_path = None
         st.session_state.recording_done = False
     
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Image Upload Panel
-    st.markdown("### 📷 Medical Image")
+    st.markdown("<div class='card-header'>📷 Medical Image</div>", unsafe_allow_html=True)
     uploaded_image = st.file_uploader("Upload a medical image", type=['jpg', 'jpeg', 'png'], label_visibility="collapsed")
     
     if uploaded_image:
@@ -108,25 +209,25 @@ with col_left:
 
 with col_right:
     # Speech-to-Text Result Box
-    st.markdown("### 📝 Speech-to-Text Result")
+    st.markdown("<div class='card-header'>📝 Speech-to-Text Result</div>", unsafe_allow_html=True)
     if st.session_state.transcription:
         st.info(st.session_state.transcription)
     else:
         st.text_area("", value="Your spoken question will appear here after analysis...", height=150, disabled=True, label_visibility="collapsed")
     
-    st.markdown("")
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Doctor's Response Box
-    st.markdown("### 👨‍⚕️ Doctor's Response")
+    st.markdown("<div class='card-header'>👨‍⚕️ Doctor's Response</div>", unsafe_allow_html=True)
     if st.session_state.doctor_response:
         st.success(st.session_state.doctor_response)
     else:
         st.text_area("", value="AI Doctor's diagnosis and recommendations will appear here...", height=150, disabled=True, label_visibility="collapsed")
     
-    st.markdown("")
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Audio Output Player
-    st.markdown("### 🔊 Audio Response")
+    st.markdown("<div class='card-header'>🔊 Audio Response</div>", unsafe_allow_html=True)
     if st.session_state.response_audio_path and os.path.exists(st.session_state.response_audio_path):
         # Read audio file
         with open(st.session_state.response_audio_path, "rb") as audio_f:
@@ -211,5 +312,4 @@ if st.button("🔍 ANALYZE NOW", type="primary", use_container_width=True):
             st.exception(e)
 
 # Footer
-st.markdown("---")
-st.markdown("<p style='text-align: center; color: #888;'>⚕️ <i>This is an AI-powered educational tool. Always consult a real medical professional for actual medical advice.</i></p>", unsafe_allow_html=True)
+st.markdown("<div class='footer-text'>⚕️ <i>This is an AI-powered educational tool. Always consult a real medical professional for actual medical advice.</i></div>", unsafe_allow_html=True)
