@@ -1,13 +1,8 @@
-
 #Step1: Setup Audio recorder (using sounddevice - compatible with Python 3.14)
 import sys
 import logging
-import sounddevice as sd
-import soundfile as sf
-import numpy as np
 import os
 import subprocess
-import imageio_ffmpeg
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -30,6 +25,11 @@ def record_audio(file_path, duration=10, sample_rate=44100):
     sample_rate (int): Sample rate for recording (default: 44100 Hz).
     """
     try:
+        import sounddevice as sd
+        import soundfile as sf
+        import imageio_ffmpeg
+        import numpy as np
+
         logging.info(f"Recording for {duration} seconds...")
         logging.info("Start speaking now!")
         
@@ -73,12 +73,6 @@ def record_audio(file_path, duration=10, sample_rate=44100):
         logging.error(f"An error occurred: {e}")
         return False
 
-# Step 1 is commented out - only Step 2 will run
-audio_filepath = "patient_voice_test_for_patient.mp3"
-# Uncomment the line below to record audio (Step 1):
-record_audio(file_path=audio_filepath, duration=10)
-
-
 #Step2: Setup Speech to text–STT–model for transcription
 from groq import Groq
 
@@ -99,6 +93,7 @@ def transcribe_with_groq(stt_model, audio_filepath, GROQ_API_KEY):
 
 # Run Step 2: Transcribe the audio file
 if __name__ == "__main__":
+    audio_filepath = "patient_voice_test_for_patient.mp3"
     if not GROQ_API_KEY:
         logging.error("GROQ_API_KEY environment variable is not set!")
         print("Please set your GROQ_API_KEY environment variable.")

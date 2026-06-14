@@ -80,48 +80,20 @@ with col_left:
     # Voice Recording Panel
     st.markdown("### 🎤 Voice Recording")
     
-    voice_col1, voice_col2 = st.columns([1, 1])
+    audio_value = st.audio_input("Record your voice", label_visibility="collapsed")
     
-    with voice_col1:
-        if st.button("🎙️ Start Recording", use_container_width=True, type="primary", disabled=st.session_state.is_recording):
-            st.session_state.is_recording = True
-            with st.spinner("🔴 Recording for 10 seconds... Please speak!"):
-                try:
-                    temp_dir = Path("temp")
-                    temp_dir.mkdir(exist_ok=True)
-                    
-                    audio_path = temp_dir / "recorded_audio.mp3"
-                    success = record_audio(file_path=str(audio_path), duration=10)
-                    
-                    if success:
-                        st.session_state.recorded_audio_path = str(audio_path)
-                        st.session_state.recording_done = True
-                        st.session_state.is_recording = False
-                        st.success("✅ Recording complete!")
-                        time.sleep(0.5)
-                        st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Recording error: {str(e)}")
-                    st.session_state.is_recording = False
-    
-    with voice_col2:
-        if st.button("⏹️ Stop/Reset", use_container_width=True, disabled=not st.session_state.recording_done):
-            st.session_state.recorded_audio_path = None
-            st.session_state.recording_done = False
-            st.session_state.is_recording = False
-            st.rerun()
-    
-    # Device input dropdown (placeholder for future implementation)
-    audio_device = st.selectbox("🔊 Audio Input Device", ["Default Microphone", "System Audio"])
-    
-    # Show recorded audio
-    if st.session_state.recording_done and st.session_state.recorded_audio_path:
-        if os.path.exists(st.session_state.recorded_audio_path):
-            st.audio(st.session_state.recorded_audio_path)
-        else:
-            st.warning("⚠️ Recording not found")
+    if audio_value:
+        temp_dir = Path("temp")
+        temp_dir.mkdir(exist_ok=True)
+        # st.audio_input returns WAV audio data, which Groq Whisper API handles perfectly.
+        audio_path = temp_dir / "recorded_audio.wav"
+        with open(audio_path, "wb") as f:
+            f.write(audio_value.getbuffer())
+        st.session_state.recorded_audio_path = str(audio_path)
+        st.session_state.recording_done = True
     else:
-        st.info("👆 Click 'Start Recording' to begin")
+        st.session_state.recorded_audio_path = None
+        st.session_state.recording_done = False
     
     st.markdown("---")
     
@@ -220,7 +192,8 @@ if st.button("🔍 ANALYZE NOW", type="primary", use_container_width=True):
             output_audio_path = temp_dir / "doctor_response.mp3"
             text_to_speech_with_gtts(
                 input_text=doctor_response,
-                output_filepath=str(output_audio_path)
+                output_filepath=str(output_audio_path),
+                play_audio=False
             )
             st.session_state.response_audio_path = str(output_audio_path)
             
